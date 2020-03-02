@@ -178,7 +178,7 @@
                 <tr v-for="item in filterByYear(dashboard.salesPerYear)">
                   <td class="has-text-weight-bold">{{item.month|toMonth}}</td>
                   <td class="has-text-right">{{item.num_sales|currency}}</td>
-                  <td class="has-text-right">{{item.num_transactions|money}}</td>
+                  <td class="has-text-right">{{item.num_transactions|number}}</td>
                 </tr>
               </tbody>
             </table>
