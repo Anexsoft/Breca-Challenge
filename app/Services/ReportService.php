@@ -17,6 +17,7 @@ class ReportService {
         $this->numberOfVisitsByGender($result);
         $this->numberOfVisitsByGeneration($result);
         $this->salesPerYear($result);
+        $this->salesPerWeek($result);
 
         return $result;
     }
@@ -91,5 +92,35 @@ class ReportService {
         $stm->execute();
 
         $result['salesPerYear'] = $stm->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    private function salesPerWeek(&$result) : void {
+        $query = "
+            SELECT
+                year,
+                dayofweek,
+                SUM(dawning) dawning,
+                SUM(morning) morning,
+                SUM(afternoon) afternoon,
+                SUM(night) night
+            FROM (
+                SELECT
+                    YEAR(DATE) year,
+                DAYOFWEEK(DATE) dayofweek,
+                IF(HOUR(DATE) BETWEEN 0 AND 5, SUM(1), 0) dawning,
+                IF(HOUR(DATE) BETWEEN 6 AND 11, SUM(1), 0) morning,
+                IF(HOUR(DATE) BETWEEN 12 AND 18, SUM(1), 0) afternoon,
+                IF(HOUR(DATE) BETWEEN 19 AND 23, SUM(1), 0) night
+                FROM visits
+                GROUP BY YEAR(DATE), DAYOFWEEK(DATE), HOUR(DATE)
+                ORDER BY YEAR(DATE) DESC
+            ) alias
+            GROUP BY YEAR, dayofweek
+        ";
+
+        $stm = $this->pdo->prepare($query);
+        $stm->execute();
+
+        $result['salesPerWeek'] = $stm->fetchAll(PDO::FETCH_OBJ);
     }
 }

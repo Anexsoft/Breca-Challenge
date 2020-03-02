@@ -29,7 +29,7 @@
     </footer>
   </section>
 
-  <script src="public/app.js"></script>
+  <script src="public/app.js?v=1"></script>
   <script>
         // Initialize Components
         window.addEventListener('DOMContentLoaded', () => {

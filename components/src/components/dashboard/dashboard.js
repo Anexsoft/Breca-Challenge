@@ -23,7 +23,21 @@ export default {
 
           self.isLoading = false;
           self.dashboard = data;
-          self.$helpers.cache.add(self.cache.key, data, self.cache.minutes)
+
+          addExtraInformation(data);
+
+          function addExtraInformation() {
+            data.salesPerWeek.forEach(x => {
+              x.dawning = parseInt(x.dawning);
+              x.morning = parseInt(x.morning);
+              x.afternoon = parseInt(x.afternoon);
+              x.night = parseInt(x.night);
+
+              x.total = x.dawning + x.morning + x.afternoon + x.night;
+            })
+          }
+
+          self.$helpers.cache.add(self.cache.key, data, self.cache.minutes);
         }).catch(() => {
           console.error('Ocurrió un error inesperado.');
         });
@@ -66,6 +80,17 @@ export default {
       if (value == 10) return 'Octubre';
       if (value == 11) return 'Noviembre';
       if (value == 12) return 'Diciembre';
+
+      return '--';
+    },
+    toDayOfweek(value) {
+      if (value == 1) return 'Lunes';
+      if (value == 2) return 'Martes';
+      if (value == 3) return 'Miércoles';
+      if (value == 4) return 'Jueves';
+      if (value == 5) return 'Viernes';
+      if (value == 6) return 'Sábado';
+      if (value == 7) return 'Domingo';
 
       return '--';
     }

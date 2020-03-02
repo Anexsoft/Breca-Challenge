@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div
       v-if="isLoading"
       class="has-text-centered is-size-5"
@@ -95,6 +95,71 @@
         </div>
       </div>
 
+      <div class="table-container box">
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Día de la semana</th>
+              <th class="has-text-centered" style="width:130px;">Madrugada</th>
+              <th class="has-text-centered" style="width:130px;">Mañana</th>
+              <th class="has-text-centered" style="width:130px;">Tarde</th>
+              <th class="has-text-centered" style="width:130px;">Noche</th>
+              <th class="has-text-right" style="width:100px;">Total</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th class="has-text-centered has-text-weight-light">12am a 5am</th>
+              <th class="has-text-centered has-text-weight-light">6am a 11am</th>
+              <th class="has-text-centered has-text-weight-light">12pm a 6pm</th>
+              <th class="has-text-centered has-text-weight-light">7pm a 11pm</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in filterByYear(dashboard.salesPerWeek)">
+              <td>{{item.dayofweek|toDayOfweek}}</td>
+              <td>
+                <progress
+                  :title="item.dawning + ' visitantes'"
+                  style="margin-top:5px;"
+                  class="progress is-info"
+                  :value="item.dawning / item.total * 100"
+                  max="100"
+                ></progress>
+              </td>
+              <td>
+                <progress
+                  :title="item.morning + ' visitantes'"
+                  style="margin-top:5px;"
+                  class="progress is-primary"
+                  :value="item.morning / item.total * 100"
+                  max="100"
+                ></progress>
+              </td>
+              <td>
+                <progress
+                  :title="item.afternoon + ' visitantes'"
+                  style="margin-top:5px;"
+                  class="progress is-danger"
+                  :value="item.afternoon / item.total * 100"
+                  max="100"
+                ></progress>
+              </td>
+              <td>
+                <progress
+                  :title="item.night + ' visitantes'"
+                  style="margin-top:5px;"
+                  class="progress is-black"
+                  :value="item.night / item.total * 100"
+                  max="100"
+                ></progress>
+              </td>
+              <td class="has-text-right">{{item.total|number}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <h4 class="title">Reporte de Ingresos</h4>
       <h5 class="subtitle">Ingresos percibidos durante el año de los centros comerciales.</h5>
 
@@ -105,13 +170,15 @@
               <thead>
                 <tr>
                   <th>Mes</th>
-                  <th class="has-text-right">Ingreso (S/)</th>
+                  <th style="width:200px;" class="has-text-right">Ingreso (S/)</th>
+                  <th style="width:200px;" class="has-text-right">Transacciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="item in filterByYear(dashboard.salesPerYear)">
                   <td class="has-text-weight-bold">{{item.month|toMonth}}</td>
                   <td class="has-text-right">{{item.num_sales|currency}}</td>
+                  <td class="has-text-right">{{item.num_transactions|money}}</td>
                 </tr>
               </tbody>
             </table>
